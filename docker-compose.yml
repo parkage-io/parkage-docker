@@ -1,0 +1,42 @@
+# Parkage — production compose file.
+#   Start:   docker compose up -d
+#   Update:  docker compose pull && docker compose up -d     (data in ./data is preserved)
+#   Logs:    docker compose logs -f parkage
+name: parkage
+
+services:
+  parkage:
+    image: ${PARKAGE_IMAGE:-ghcr.io/bhuvanesh1998/parkage:latest}
+    container_name: parkage
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${PARKAGE_S3_PORT:-9000}:9000"        # S3 API
+      - "${PARKAGE_CONSOLE_PORT:-9001}:9001"   # Web console
+    volumes:
+      - ${PARKAGE_DATA_PATH:-./data}:/data
+    # hardening: read-only root filesystem, no privileges, no capabilities
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/parkage", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # Optional automatic updates: docker compose --profile autoupdate up -d
+  watchtower:
+    image: containrrr/watchtower:latest
+    profiles: ["autoupdate"]
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --schedule "0 0 4 * * *" parkage
