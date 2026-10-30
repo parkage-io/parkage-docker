@@ -33,6 +33,8 @@ services:
       options: { max-size: "10m", max-file: "3" }
 
   # Optional automatic updates: docker compose --profile autoupdate up -d
+  # Note: Watchtower needs the Docker socket, which is root-equivalent on the host. Only enable it if you
+  # trust that image; otherwise update manually with the command at the top of this file.
   watchtower:
     image: containrrr/watchtower:latest
     profiles: ["autoupdate"]

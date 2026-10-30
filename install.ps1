@@ -53,6 +53,8 @@ if (-not $ok) { throw "Server did not start. Check: docker compose logs (in $Dir
 
 Write-Host "`nParkage is running!`n" -ForegroundColor Green
 Write-Host "  Web console : http://localhost:$UiPort   (open it to create your owner account)"
+$code = (docker compose logs parkage 2>$null | Select-String -Pattern 'setup code: ([A-Z0-9-]+)' | Select-Object -Last 1)
+if ($code) { Write-Host "  Setup code  : $($code.Matches[0].Groups[1].Value)   (the wizard asks for it)" -ForegroundColor Yellow }
 Write-Host "  S3 endpoint : http://localhost:$S3Port"
 Write-Host "  Update      : cd $Dir; docker compose pull; docker compose up -d`n"
 Start-Process "http://localhost:$UiPort"

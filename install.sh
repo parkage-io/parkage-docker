@@ -24,7 +24,8 @@ say "Installing Parkage into $DIR"
 mkdir -p "$DIR/data"
 cd "$DIR"
 # the container runs as uid 65532 (non-root)
-chown 65532:65532 data 2>/dev/null || sudo chown 65532:65532 data 2>/dev/null || chmod 777 data
+chown 65532:65532 data 2>/dev/null || sudo chown 65532:65532 data 2>/dev/null || \
+  die "Could not hand $DIR/data to the container user. Run: sudo chown 65532:65532 $DIR/data  (never chmod 777)"
 
 cat > docker-compose.yml <<EOF
 name: parkage
@@ -63,6 +64,8 @@ done
 
 printf '\n\033[1;32mParkage is running!\033[0m\n\n'
 printf '  Web console : http://%s:%s   (open it to create your owner account)\n' "$HOST" "$UI_PORT"
+CODE=$(docker compose logs parkage 2>/dev/null | grep -o 'setup code: [A-Z0-9-]*' | tail -n 1 | cut -d' ' -f3)
+[ -n "${CODE:-}" ] && printf '  Setup code  : \033[1m%s\033[0m   (the wizard asks for it)\n' "$CODE"
 printf '  S3 endpoint : http://%s:%s\n' "$HOST" "$S3_PORT"
 printf '  Data folder : %s/data\n\n' "$DIR"
 printf '  Update      : cd %s && docker compose pull && docker compose up -d\n\n' "$DIR"
