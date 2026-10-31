@@ -12,7 +12,7 @@ This branch contains **only what you need to run Parkage** — no source code.
 
 **Option A — git (recommended: updates with `git pull`)**
 ```sh
-git clone -b docker --single-branch https://github.com/bhuvanesh1998/parkage.git parkage
+git clone https://github.com/bhuvanesh1998/parkage-docker.git parkage
 cd parkage
 cp .env.example .env          # Windows: copy .env.example .env
 mkdir -p data && sudo chown 65532:65532 data    # Linux only (container runs as non-root uid 65532)
@@ -22,9 +22,9 @@ docker compose up -d
 **Option B — one-line installer**
 ```sh
 # Linux / macOS
-curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage-docker/main/install.sh | sh
 # Windows (Docker Desktop, PowerShell)
-irm https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install.ps1 | iex
+irm https://raw.githubusercontent.com/bhuvanesh1998/parkage-docker/main/install.ps1 | iex
 ```
 
 Then open **http://localhost:9001** — the setup wizard creates your owner account and first access key.
@@ -33,22 +33,9 @@ you can also find it with `docker compose logs parkage | grep "setup code"`.
 Ports in use? Set `PARKAGE_S3_PORT` / `PARKAGE_CONSOLE_PORT` in `.env`.
 
 
-**Option C - without Docker (native program)**
-```sh
-# Linux (systemd service) / macOS (launch agent)
-curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install-native.sh | sh
-```
-```powershell
-# Windows - PowerShell as Administrator (starts at boot as LOCAL SERVICE)
-irm https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install-native.ps1 | iex
-```
-Both installers download the program for your CPU (x86-64 or ARM64) from the latest release and refuse to install it if
-it does not match `SHA256SUMS`. Or download a program from the Releases page yourself and run `parkage server`
-(data is kept in `./data`). Service files are in [`native/`](native/).
-
 ## Update
 ```sh
-git pull                      # newest compose/config from this branch
+git pull                      # newest compose/config from this repository
 docker compose pull           # newest image
 docker compose up -d          # restart — data in ./data is kept
 ```
@@ -86,3 +73,12 @@ Back up the whole `data` folder (stop the container or use a filesystem snapshot
 docker compose ps
 docker compose logs -f parkage
 ```
+
+## Security
+- No default passwords: the setup wizard needs a one-time code from the server log.
+- Buckets are private by default; give each app a bucket-scoped access key.
+- The container runs as a non-root user on a read-only filesystem with no capabilities.
+- Report a vulnerability privately: open a GitHub security advisory on this repository (Security -> Report a vulnerability).
+
+## Links
+Website and docs: https://parkage.io - Download page: https://parkage.io/download - Plans: https://parkage.io/pricing

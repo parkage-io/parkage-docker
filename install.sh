@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Parkage one-line installer (Linux / macOS):
-#   curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage-docker/main/install.sh | sh
 set -eu
 
 IMAGE="${PARKAGE_IMAGE:-ghcr.io/bhuvanesh1998/parkage:latest}"
