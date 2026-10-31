@@ -32,6 +32,20 @@ The wizard asks for a one-time **setup code** so nobody else can claim your serv
 you can also find it with `docker compose logs parkage | grep "setup code"`.
 Ports in use? Set `PARKAGE_S3_PORT` / `PARKAGE_CONSOLE_PORT` in `.env`.
 
+
+**Option C - without Docker (native program)**
+```sh
+# Linux (systemd service) / macOS (launch agent)
+curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install-native.sh | sh
+```
+```powershell
+# Windows - PowerShell as Administrator (starts at boot as LOCAL SERVICE)
+irm https://raw.githubusercontent.com/bhuvanesh1998/parkage/docker/install-native.ps1 | iex
+```
+Both installers download the program for your CPU (x86-64 or ARM64) from the latest release and refuse to install it if
+it does not match `SHA256SUMS`. Or download a program from the Releases page yourself and run `parkage server`
+(data is kept in `./data`). Service files are in [`native/`](native/).
+
 ## Update
 ```sh
 git pull                      # newest compose/config from this branch

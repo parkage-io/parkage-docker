@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Parkage as a macOS launch agent (installed by install-native.sh into ~/Library/LaunchAgents).
+     __HOME__ is replaced with your home folder by the installer. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>io.parkage.server</string>
+  <key>ProgramArguments</key>
+  <array><string>/usr/local/bin/parkage</string><string>server</string></array>
+  <key>EnvironmentVariables</key>
+  <dict><key>PARKAGE_DATA_DIR</key><string>__HOME__/Library/Application Support/Parkage</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>__HOME__/Library/Logs/Parkage/parkage.log</string>
+  <key>StandardErrorPath</key><string>__HOME__/Library/Logs/Parkage/parkage.log</string>
+</dict>
+</plist>
