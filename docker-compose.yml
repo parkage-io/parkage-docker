@@ -6,7 +6,7 @@ name: parkage
 
 services:
   parkage:
-    image: ${PARKAGE_IMAGE:-ghcr.io/bhuvanesh1998/parkage:latest}
+    image: ${PARKAGE_IMAGE:-ghcr.io/parkage-io/parkage:latest}
     container_name: parkage
     restart: unless-stopped
     env_file: .env

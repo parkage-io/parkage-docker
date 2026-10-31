@@ -12,7 +12,7 @@ This branch contains **only what you need to run Parkage** — no source code.
 
 **Option A — git (recommended: updates with `git pull`)**
 ```sh
-git clone https://github.com/bhuvanesh1998/parkage-docker.git parkage
+git clone https://github.com/parkage-io/parkage-docker.git parkage
 cd parkage
 cp .env.example .env          # Windows: copy .env.example .env
 mkdir -p data && sudo chown 65532:65532 data    # Linux only (container runs as non-root uid 65532)
@@ -22,9 +22,9 @@ docker compose up -d
 **Option B — one-line installer**
 ```sh
 # Linux / macOS
-curl -fsSL https://raw.githubusercontent.com/bhuvanesh1998/parkage-docker/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/parkage-io/parkage-docker/main/install.sh | sh
 # Windows (Docker Desktop, PowerShell)
-irm https://raw.githubusercontent.com/bhuvanesh1998/parkage-docker/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/parkage-io/parkage-docker/main/install.ps1 | iex
 ```
 
 Then open **http://localhost:9001** — the setup wizard creates your owner account and first access key.
@@ -44,7 +44,7 @@ Or enable automatic nightly updates: `docker compose --profile autoupdate up -d`
 ## Migrate from MinIO
 ```sh
 docker run --rm -e MIGRATE_SRC_SECRET=<minio-secret> -e MIGRATE_DST_SECRET=<parkage-secret> \
-  ghcr.io/bhuvanesh1998/parkage:latest migrate \
+  ghcr.io/parkage-io/parkage:latest migrate \
   --src http://<minio-host>:9000 --src-key <minio-access-key> \
   --dst http://<parkage-host>:9000 --dst-key <parkage-access-key> --buckets bucket1,bucket2
 ```

@@ -1,7 +1,7 @@
 # Parkage installer for Windows (Docker Desktop):
-#   irm https://raw.githubusercontent.com/bhuvanesh1998/parkage-docker/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/parkage-io/parkage-docker/main/install.ps1 | iex
 $ErrorActionPreference = 'Stop'
-$Image  = if ($env:PARKAGE_IMAGE) { $env:PARKAGE_IMAGE } else { 'ghcr.io/bhuvanesh1998/parkage:latest' }
+$Image  = if ($env:PARKAGE_IMAGE) { $env:PARKAGE_IMAGE } else { 'ghcr.io/parkage-io/parkage:latest' }
 $Dir    = if ($env:PARKAGE_DIR) { $env:PARKAGE_DIR } else { Join-Path $HOME 'parkage' }
 $S3Port = if ($env:PARKAGE_S3_PORT) { $env:PARKAGE_S3_PORT } else { '9000' }
 $UiPort = if ($env:PARKAGE_CONSOLE_PORT) { $env:PARKAGE_CONSOLE_PORT } else { '9001' }
