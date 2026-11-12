@@ -51,6 +51,32 @@ docker run --rm -e MIGRATE_SRC_SECRET=<minio-secret> -e MIGRATE_DST_SECRET=<park
 Only reads from MinIO, verifies object counts and sizes, and is safe to re-run. Bucket policies stay private unless you add `--copy-policy`.
 MinIO environment variables (`MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_DOMAIN`) are also accepted.
 
+## Sync, verify and inventory (S3-style data tools)
+Copy buckets between Parkage and any S3-compatible service (AWS S3, MinIO, another Parkage), then prove the copy is complete.
+In the console: **Data tools** (administrators). From the command line, run the tools inside the container, so `127.0.0.1:9000` is this server:
+
+```sh
+export PARKAGE_SRC_KEY=<old-access-key> PARKAGE_SRC_SECRET=<old-secret>    # the source service
+export PARKAGE_DST_KEY=<parkage-access-key> PARKAGE_DST_SECRET=<parkage-secret>
+E="-e PARKAGE_SRC_KEY -e PARKAGE_SRC_SECRET -e PARKAGE_DST_KEY -e PARKAGE_DST_SECRET"
+
+docker compose exec $E parkage parkage sync   https://old.example.com/photos http://127.0.0.1:9000/photos --dry-run
+docker compose exec $E parkage parkage sync   https://old.example.com/photos http://127.0.0.1:9000/photos
+docker compose exec $E parkage parkage verify https://old.example.com/photos http://127.0.0.1:9000/photos --checksum --report /data/diff.csv
+docker compose exec $E parkage parkage batch  --op copy --manifest /data/diff.csv https://old.example.com/photos http://127.0.0.1:9000/photos
+```
+
+| Command | What it does |
+|---|---|
+| `sync SRC DST` | Copies new and changed objects with metadata and tags; skips identical ones. `--delete`, `--dry-run`, `--include` / `--exclude` (as `aws s3 sync`) |
+| `verify A B` | Object-by-object cross-check: missing, size, ETag, content with `--checksum`. Exit code 0 = identical |
+| `inventory SRC` | S3 Inventory report in the AWS format (CSV + `manifest.json`) |
+| `batch --op copy\|delete\|tag` | Runs one operation on exactly the objects in an inventory or report (`delete` needs `--confirm`) |
+
+A bare `-e NAME` passes the variable from your shell without putting the secret on the command line. Reports written to `/data/<file>.csv` appear in `./data` on the host; delete them when done.
+Scheduled daily or weekly inventory reports are set per bucket in the console under *Bucket settings*.
+Verify with `--checksum` before you delete a migration source.
+
 ## Configuration
 All settings are environment variables — see [`.env.example`](.env.example). Common ones:
 
